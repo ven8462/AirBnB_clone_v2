@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # Import necessary modules
 from fabric.api import env, run, put
 from os import path
