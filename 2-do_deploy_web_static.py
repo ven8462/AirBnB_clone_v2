@@ -5,6 +5,8 @@ from os import path
 
 # Set the hosts for the Fabric script
 env.hosts = ['100.25.133.244', '100.26.132.163']
+env.user = "ubuntu"
+env.key_filename = "~/.ssh/id_rsa"
 
 
 # Define the do_deploy function
