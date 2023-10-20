@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
-from importlib import reload
-import json
 from models.base_model import BaseModel
-from models.user import User
-from models.place import Place
 from models.state import State
-from models.city import City
 from models.amenity import Amenity
+from models.city import City
+from models.place import Place
 from models.review import Review
+from models.user import User
+import json
+import os
 
 
 class FileStorage:
@@ -18,14 +18,7 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
-        if cls is None:
-            return FileStorage.__objects
-
-        my_dict = {}
-        for key, val in FileStorage.__objects.items():
-            if isinstance(val, cls):
-                my_dict[key] = val
-        return my_dict
+        return FileStorage.__objects
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -46,11 +39,20 @@ class FileStorage:
         if obj is None:
             return
         key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        del self.__objects[key]
-        # self.save()
+        if key in self.__objects:
+            del self.__objects[key]
+            self.save()
 
     def reload(self):
         """Loads storage dictionary from file"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
+
         classes = {
                     'BaseModel': BaseModel, 'User': User, 'Place': Place,
                     'State': State, 'City': City, 'Amenity': Amenity,
@@ -66,5 +68,7 @@ class FileStorage:
             pass
 
     def close(self):
-        """ calls reload method for deserializing the JSON file to objects"""
-        self.reload()
+        """
+        method for deserializing the JSON file to objects
+        """
+        self.reload(self)
