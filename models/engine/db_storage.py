@@ -49,7 +49,7 @@ class DBStorage:
         else:
             query = session.query(cls)
             for obj in query.all():
-                key = f"{obj.__class__.__name}.{obj.id}"
+                key = f"{obj.__class__.__name__}.{obj.id}"
                 dictionary[key] = obj
 
         return dictionary

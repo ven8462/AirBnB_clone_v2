@@ -4,7 +4,7 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from os import getenv
 from sqlalchemy.orm import relationship
-from models import Review
+from models.review import Review
 
 
 class Place(BaseModel, Base):
@@ -23,7 +23,7 @@ class Place(BaseModel, Base):
 
     __tablename__ = "places"
     city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
-    user_id = Column(String(60), ForeignKey("user.id"), nullable=False)
+    user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
     name = Column(String(128), nullable=False)
     description = Column(String(1024), nullable=False)
     number_rooms = Column(Integer, nullable=False, default=0)
@@ -33,22 +33,20 @@ class Place(BaseModel, Base):
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
 
-    if getenv("HBNB_TYPE_STORAGE") == "db":
-        reviews = relationship("Review",
-                               backref="place", cascade="all, delete")
-    else:
-        @property
-        def reviews(self):
-            """
-            getter attribute reviews that
-            returns the list of Review instances
-            with place_id equals to the current Place.id
-            """
-            from models import storage
-            obj = storage.all(Review)
-            review_list = []
-            for value in obj.values():
-                if value.place_id == self.id:
-                    review_list.append(value)
+    reviews = relationship("Review", backref="places", cascade="all, delete")
 
-            return review_list
+    @property
+    def reviews(self):
+        """
+        getter attribute reviews that
+        returns the list of Review instances
+        with place_id equals to the current Place.id
+        """
+        from models import storage
+        obj = storage.all(Review)
+        review_list = []
+        for value in obj.values():
+            if value.place_id == self.id:
+                review_list.append(value)
+
+        return review_list
