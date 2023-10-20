@@ -54,7 +54,6 @@ class DBStorage:
 
         return dictionary
 
-
     def new(self, obj):
         """
         add the object to the current database session
