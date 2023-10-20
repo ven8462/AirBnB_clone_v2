@@ -1,6 +1,14 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
+from importlib import reload
 import json
+from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 
 
 class FileStorage:
@@ -12,20 +20,12 @@ class FileStorage:
         """Returns a dictionary of models currently in storage"""
         if cls is None:
             return FileStorage.__objects
-# <<<<<<< master
+
         my_dict = {}
         for key, val in FileStorage.__objects.items():
             if isinstance(val, cls):
                 my_dict[key] = val
         return my_dict
-# =======
-#         else:
-#             dictionary = {}
-#             for key in self.__objects.keys():
-#                 if key.split(".")[0] == cls.__name__:
-#                     dictionary[key] = self.__objects[key]
-#             return dictionary
-# >>>>>>> master
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -51,14 +51,6 @@ class FileStorage:
 
     def reload(self):
         """Loads storage dictionary from file"""
-        from models.base_model import BaseModel
-        from models.user import User
-        from models.place import Place
-        from models.state import State
-        from models.city import City
-        from models.amenity import Amenity
-        from models.review import Review
-
         classes = {
                     'BaseModel': BaseModel, 'User': User, 'Place': Place,
                     'State': State, 'City': City, 'Amenity': Amenity,
@@ -72,3 +64,7 @@ class FileStorage:
                     self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
+
+    def close(self):
+        """ calls reload method for deserializing the JSON file to objects"""
+        reload()
