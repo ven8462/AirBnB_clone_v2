@@ -24,7 +24,7 @@ def states_id(id):
     for state in states:
         if state.id == id:
             return render_template("9-states.html", state=state)
-    return render_template("9-states.html", not_found=True)
+    return render_template("9-states.html", state="Not found!")
 
 
 @app.teardown_appcontext
