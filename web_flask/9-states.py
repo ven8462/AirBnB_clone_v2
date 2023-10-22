@@ -23,6 +23,13 @@ def state_city():
     states = storage.all(State)
     return render_template('8-cities_by_states.html', states=states)
 
+@app.route('/states/<id>', strict_slashes=False)
+def states_id(id):
+    """ finding state  with it's id"""
+    for state in storage.all(State).values():
+        if state.id == id:
+            return render_template("9-states.html", state=state)
+    return render_template("9-states.html")
 
 @app.teardown_appcontext
 def close_session(self):
