@@ -10,33 +10,21 @@ from flask import render_template
 app = Flask(__name__)
 
 
-@app.route('/states_list', strict_slashes=False)
-def states_list():
-    """displays an HTML document 7"""
-    states = storage.all(State)
-    return render_template('7-states_list.html', states=states)
-
-
-@app.route('/cities_by_states', strict_slashes=False)
-def state_city():
-    """displays list of cities"""
-    states = storage.all(State)
-    return render_template('8-cities_by_states.html', states=states)
-
-
 @app.route('/states', strict_slashes=False)
-@app.route('/states/<id>', strict_slashes=False)
-def states(id=None):
-    '''Returns a template with all the states in storage'''
+def states():
+    """Returns a template with all the states in storage"""
     states = storage.all(State).values()
-    if id is None:
-        return render_template('9-states.html', states=states)
-    else:
-        state = None
-        for ids in states:
-            if ids.id == id:
-                state = ids
-        return render_template("9-states.html", state=state)
+    return render_template("9-states.html", states=states)
+
+
+@app.route('/states/<id>', strict_slashes=False)
+def states_id(id):
+    """finds city with id"""
+    states = storage.all(State).values()
+    for state in states:
+        if state.id == id:
+            return render_template("9-states.html", state=state)
+    return render_template("9-states.html", not_found=True)
 
 
 @app.teardown_appcontext
