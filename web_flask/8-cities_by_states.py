@@ -17,6 +17,13 @@ def states_list():
     return render_template('7-states_list.html', states=states)
 
 
+@app.route('/cities_by_states', strict_slashes=False)
+def state_city():
+    """displays list of cities"""
+    states = storage.all(State)
+    return render_template('8-cities_by_states.html', states=states)
+
+
 @app.teardown_appcontext
 def close_session(self):
     '''Removes current SQLAlchemy session'''
