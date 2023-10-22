@@ -1,14 +1,6 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
-from models.base_model import BaseModel
-from models.state import State
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.user import User
 import json
-import os
 
 
 class FileStorage:
@@ -18,15 +10,13 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
-        print_dict = {}
         if cls:
-            className = cls.__name__
-            for k, v in FileStorage.__objects.items():
-                if k.split('.')[0] == className:
-                    print_dict[k] = v
-            return print_dict
-        else:
-            return FileStorage.__objects
+            try:
+                return {key: val for (key, val) in self.__objects.items()
+                        if cls.__name__ == key.split('.')[0]}
+            except Exception:
+                return {}
+        return FileStorage.__objects
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -39,17 +29,7 @@ class FileStorage:
             temp.update(FileStorage.__objects)
             for key, val in temp.items():
                 temp[key] = val.to_dict()
-            json.dump(temp, f, indent=2)
-
-    def delete(self, obj=None):
-        """a new public instance method to delete obj from __objects"""
-
-        if obj is None:
-            return
-        key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        if key in self.__objects:
-            del self.__objects[key]
-            self.save()
+            json.dump(temp, f)
 
     def reload(self):
         """Loads storage dictionary from file"""
@@ -75,8 +55,14 @@ class FileStorage:
         except FileNotFoundError:
             pass
 
+    def delete(self, obj=None):
+        """to delete obj from __objects"""
+        if obj:
+            key = obj.__class__.__name__ + "." + obj.id
+            if key in self.__objects:
+                del self.__objects[key]
+                self.save()
+
     def close(self):
-        """
-        method for deserializing the JSON file to objects
-        """
-        self.reload(self)
+        """deserialise JSON file to objects"""
+        self.reload()
