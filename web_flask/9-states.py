@@ -24,13 +24,19 @@ def state_city():
     return render_template('8-cities_by_states.html', states=states)
 
 
+@app.route('/states', strict_slashes=False)
 @app.route('/states/<id>', strict_slashes=False)
-def states_id(id):
-    """ finding state  with it's id"""
-    for state in storage.all(State).values():
-        if state.id == id:
-            return render_template("9-states.html", state=state)
-    return render_template("9-states.html")
+def states(id=None):
+    '''Returns a template with all the states in storage'''
+    states = storage.all(State).values()
+    if id is None:
+        return render_template('9-states.html', states=states)
+    else:
+        state = None
+        for ids in states:
+            if ids.id == id:
+                state = ids
+        return render_template("9-states.html", state=state)
 
 
 @app.teardown_appcontext
